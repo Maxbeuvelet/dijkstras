@@ -1,22 +1,23 @@
-graph = {'a': {'b': 10, 'c': 3}, 'b': {'c': 1, 'd': 2}, 'c': {'b': 4, 'd': 8, 'e': 2}, 'd': {'e': 7}, 'e': {'d': 9}}
+graph = {'a': {'b': 10, 'c': 3}, 'b': {'c': 2, 'd': 2}, 'c': {'b': 4, 'd': 8, 'e': 2}, 'd': {'e': 7}, 'e': {'d': 9}}
 
 
 def dijkstra(graph, start, goal):
     shortest_distance = {} #this will constantly be updated as we go along.
-    predecessor = {}    #used to find shortest path, when updated it will include where the path came from
-    unseenNodes = graph  #will run through all nodes
+    prev_node = {}    #used to find shortest path, when updated it will include where the path came from
+    unseen_nodes = graph  #will run through all nodes
     infinity = 9999999  # set each node except the starting one equal to infinity
     path = []
-    for node in unseenNodes:       # setting all nodes except the starting one to infinity
+    for node in unseen_nodes:   # setting all nodes except the starting one to infinity
         shortest_distance[node] = infinity
     shortest_distance[start] = 0
-    # print(shortest_distance) # will show each node set to inf except the starting one
+
+    #print(shortest_distance) # will show each node set to inf except the starting one
 
     # algorithm starts here
 
-    while unseenNodes:  # will keep running until there is nothing in unseen Node, checks if dictionary is empty
+    while unseen_nodes:  # will keep running until there is nothing in unseen Node, checks if dictionary is empty
         minNode = None
-        for node in unseenNodes:
+        for node in unseen_nodes:
             if minNode is None:  #basecase
                 minNode = node
             elif shortest_distance[node] < shortest_distance[minNode]:
@@ -26,21 +27,22 @@ def dijkstra(graph, start, goal):
         for childNode, weight in graph[minNode].items():  # start at a, child node will be b and the weight will be 10
             if weight + shortest_distance[minNode] < shortest_distance[childNode]:   #checking to see if the path of the 2 nodes is less then infinty
                 shortest_distance[childNode] = weight + shortest_distance[minNode]
-                predecessor[childNode] = minNode  # this allows us to find the path
-        unseenNodes.pop(minNode)
+                prev_node[childNode] = minNode  # this allows us to find the path
+        unseen_nodes.pop(minNode) # this will get us out of the while loop
+
 
     currentNode = goal
     while currentNode != start:
         try:
             path.insert(0, currentNode)
-            currentNode = predecessor[currentNode]
+            currentNode = prev_node[currentNode]
         except KeyError:
             print('Path not reachable')
             break
     path.insert(0, start) #this includes the start node
-    if shortest_distance[goal] != infinity:
+    if shortest_distance[goal] != infinity: # if it is infinity it was not reached so we check if it is not
         print('Shortest distance is ' + str(shortest_distance[goal]))
         print('And the path is ' + str(path))
 
 
-dijkstra(graph, 'a', 'd')
+dijkstra(graph, 'a', 'e')
